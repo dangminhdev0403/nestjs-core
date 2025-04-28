@@ -1,9 +1,11 @@
+import { UsersModule } from '@/modules/users/users.module';
 import { HttpModule } from '@nestjs/axios';
 import { Logger, Module } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { MongooseModule } from '@nestjs/mongoose';
 import { TerminusModule } from '@nestjs/terminus';
 import { HealthController } from 'src/health/health.controller';
+import { UsersController } from 'src/modules/users/controller/users.controller';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 
@@ -13,7 +15,7 @@ import { AppService } from './app.service';
       isGlobal: true,
     }),
     MongooseModule.forRootAsync({
-      imports: [ConfigModule, TerminusModule, HttpModule],
+      imports: [ConfigModule, TerminusModule, HttpModule, UsersModule],
       useFactory: async (configService: ConfigService) => {
         const uri = configService.get<string>('MONGO_URI');
         if (!uri) {
@@ -42,7 +44,7 @@ import { AppService } from './app.service';
     }),
     TerminusModule,
   ],
-  controllers: [HealthController, AppController],
+  controllers: [UsersController, HealthController, AppController],
   providers: [AppService],
 })
 export class AppModule {}

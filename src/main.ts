@@ -19,8 +19,11 @@ async function bootstrap() {
 
   const port = process.env.PORT ?? 3000;
   await app.listen(port);
-
+  app.useGlobalPipes(new ValidationPipe());
   console.log(`🚀 Application is running on: http://localhost:${port}`);
 }
 
-bootstrap();
+bootstrap().catch((error) => {
+  console.error('Ứng dụng không thể khởi động:', error);
+  process.exit(1);
+});
