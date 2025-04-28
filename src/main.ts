@@ -1,8 +1,26 @@
+import { ValidationPipe } from '@nestjs/common';
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
-  await app.listen(process.env.PORT ?? 3000);
+
+  // Global ValidationPipe (Tự động validate DTO, lọc request)
+  app.useGlobalPipes(
+    new ValidationPipe({
+      whitelist: true, // Xóa field không khai báo trong DTO
+      forbidNonWhitelisted: true, // Chặn request chứa field lạ
+      transform: true, // Tự động chuyển kiểu dữ liệu (string -> number)
+    }),
+  );
+
+  // Enable CORS (nếu cần API gọi từ Frontend khác domain)
+  app.enableCors();
+
+  const port = process.env.PORT ?? 3000;
+  await app.listen(port);
+
+  console.log(`🚀 Application is running on: http://localhost:${port}`);
 }
+
 bootstrap();
