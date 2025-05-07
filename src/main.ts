@@ -1,6 +1,7 @@
 import { ValidationPipe } from '@nestjs/common';
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
+import { ResponseInterceptor } from './utils/response/response.interceptor';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
@@ -13,6 +14,7 @@ async function bootstrap() {
       transform: true, // Tự động chuyển kiểu dữ liệu (string -> number)
     }),
   );
+  app.useGlobalInterceptors(new ResponseInterceptor());
 
   // Enable CORS (nếu cần API gọi từ Frontend khác domain)
   app.enableCors();
