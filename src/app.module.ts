@@ -1,11 +1,15 @@
 import { HttpModule } from '@nestjs/axios';
 import { Logger, Module } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
+import { JwtService } from '@nestjs/jwt';
 import { MongooseModule } from '@nestjs/mongoose';
 import { TerminusModule } from '@nestjs/terminus';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { HealthController } from './health/health.controller';
+import { AuthController } from './modules/auth/auth.controller';
+import { AuthModule } from './modules/auth/auth.module';
+import { AuthService } from './modules/auth/auth.service';
 import { UsersController } from './modules/users/controller/users.controller';
 import { UsersModule } from './modules/users/users.module';
 
@@ -44,8 +48,14 @@ import { UsersModule } from './modules/users/users.module';
     }),
     TerminusModule,
     UsersModule,
+    AuthModule,
   ],
-  controllers: [UsersController, HealthController, AppController],
-  providers: [AppService],
+  controllers: [
+    UsersController,
+    HealthController,
+    AppController,
+    AuthController,
+  ],
+  providers: [AppService, AuthService, JwtService],
 })
 export class AppModule {}
