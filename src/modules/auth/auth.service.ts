@@ -20,7 +20,7 @@ export class AuthService {
     return null;
   }
 
-  async login(user: User): Promise<any> {
+  login(user: User): object {
     const payload: { email: string; name: string } = {
       name: user.name,
       email: user.email,
