@@ -6,7 +6,8 @@ import {
 import { InjectModel } from '@nestjs/mongoose';
 import * as bcrypt from 'bcryptjs'; // nhớ cài: npm install bcryptjs
 import { isValidObjectId, Model } from 'mongoose';
-import { CreateUserDto } from '../dto/CreateUserDto';
+import { CreateUserDto } from '../dto/users.dto.request';
+import { UserResponseDto } from '../dto/users.dto.response';
 import { User, UserDocument } from '../schemas/user.schema';
 
 @Injectable()
@@ -14,7 +15,7 @@ export class UsersService {
   constructor(
     @InjectModel(User.name) private readonly userModel: Model<UserDocument>,
   ) {}
-  async create(createUserDto: CreateUserDto): Promise<User> {
+  async create(createUserDto: CreateUserDto): Promise<UserResponseDto> {
     const { email } = createUserDto;
     const user = await this.userModel.findOne({ email }).exec();
     if (user) {
@@ -26,7 +27,12 @@ export class UsersService {
       ...createUserDto,
       password: hashedPass,
     });
-    return createdUser.save();
+    await createdUser.save();
+    const res: UserResponseDto = new UserResponseDto(
+      createdUser.name,
+      createdUser.email,
+    );
+    return res;
   }
 
   async findAll(): Promise<User[]> {
