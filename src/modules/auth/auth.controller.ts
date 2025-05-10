@@ -13,6 +13,6 @@ export class AuthController {
   @UseGuards(LocalAuthGuard) // <-- Guard dùng chiến lược 'local'
   @Post('login')
   async login(@Request() req: { user: User }): Promise<any> {
-    return await this.authService.login(req.user); // req.user là user đã được xác thực
-  }
+    return Promise.resolve(this.authService.login(req.user)); // Bọc trong Promise
+  } // req.user là user đã được xác thực bởi LocalStrategy
 }
