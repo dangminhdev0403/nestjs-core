@@ -1,6 +1,7 @@
 import { ValidationPipe } from '@nestjs/common';
-import { NestFactory } from '@nestjs/core';
+import { NestFactory, Reflector } from '@nestjs/core';
 import { AppModule } from './app.module';
+import { JwtAuthGuard } from './modules/auth/passport/jwt-auth.guard';
 import { ResponseInterceptor } from './utils/response/response.interceptor';
 
 async function bootstrap() {
@@ -15,6 +16,9 @@ async function bootstrap() {
     }),
   );
   app.useGlobalInterceptors(new ResponseInterceptor());
+  const reflector = app.get(Reflector);
+
+  app.useGlobalGuards(new JwtAuthGuard(reflector)); // Đăng ký global guard
 
   // Enable CORS (nếu cần API gọi từ Frontend khác domain)
   app.enableCors();

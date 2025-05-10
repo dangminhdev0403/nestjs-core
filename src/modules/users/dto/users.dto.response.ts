@@ -8,3 +8,15 @@ export class UserResponseDto {
     this.email = email;
   }
 }
+
+export interface Payload {
+  name: string;
+  sub: string;
+}
+
+export interface JwtDecoded {
+  name: string;
+  sub: string;
+  iat?: number;
+  exp?: number;
+}

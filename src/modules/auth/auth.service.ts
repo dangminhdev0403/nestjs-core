@@ -1,6 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import * as bcrypt from 'bcryptjs'; // nhớ cài: npm install bcryptjs
+import { Payload, UserResponseDto } from '../users/dto/users.dto.response';
 import { User } from '../users/schemas/user.schema';
 import { UsersService } from '../users/service/users.service';
 
@@ -20,17 +21,25 @@ export class AuthService {
     return null;
   }
 
+  async validateUserByPayload(email: string): Promise<User> {
+    // Chức năng này có thể được sử dụng để xác thực người dùng từ payload JWT
+    // Bạn có thể thêm logic tùy chỉnh ở đây nếu cần
+    const user = await this.usersService.getUserByEmail(email);
+    if (!user) {
+      throw new Error('User not found');
+    }
+    return user; // không trả mật khẩu
+  }
   login(user: User): object {
-    const payload: { email: string; name: string } = {
+    const payload: Payload = {
       name: user.name,
-      email: user.email,
+      sub: user.email,
     };
     const accessToken = this.jwtService.sign(payload);
+
     return {
-      accessToken,
-      user: {
-        payload,
-      },
+      'access-token': accessToken,
+      user: new UserResponseDto(user.name, user.email), // Giả sử bạn đã định nghĩa UserResponseDto
     };
   }
 }
